@@ -56,37 +56,34 @@ class get_progress extends external_api {
      * @return array of progress student into course o empty array
      */
     public static function execute($data) {
-        
+        global $DB;
         $params = self::validate_parameters(self::execute_parameters(), ['data' => $data]);
- 
         $response = array();
         foreach ($params['data'] as $data) {
             $data = (object)$data;
-            $usuario = fields_user ($data->userid);
-            $curso = datos_curso ($data->courseid);
-            $acabado = course_completion ($data->userid, $data->courseid);
-            $matricula = enrol_dates($data->userid, $data->courseid);
-            $accesos = numero_visitas ($data->userid, $data->courseid);
-            $ultimo_acceso = ultimo_acceso ($data->userid, $data->courseid);
-            
-            $response[] = array(
-                'firstname' => $usuario->firstname,
-                'lastname' => $usuario->lastname,
-                'email' => $usuario->email,
-                'profile_field_specialcode' => $usuario->profile_field_specialcode,
-                'coursename' => $curso['fullname'],
-                'courseshortname' => $curso['shortname'],
-                'startdate' => $matricula['timestart'],
-                'enddate' => $matricula['timeend'],
-                'coursestatus' => $acabado,
-                'access' => $accesos,
-                'lastaccess' => $ultimo_acceso
-            );
-            
+            if ($DB->get_record('user', array('id'=>$data->userid, 'suspended'=>0, 'deleted'=>0)) && $DB->get_record('course', array('id'=>$data->courseid))) {
+                $usuario = fields_user ($data->userid);
+                $curso = datos_curso ($data->courseid);
+                $acabado = course_completion ($data->userid, $data->courseid);
+                $matricula = enrol_dates($data->userid, $data->courseid);
+                $accesos = numero_visitas ($data->userid, $data->courseid);
+                $ultimo_acceso = ultimo_acceso ($data->userid, $data->courseid);
+                
+                $response[] = array(
+                    'firstname' => $usuario->firstname,
+                    'lastname' => $usuario->lastname,
+                    'email' => $usuario->email,
+                    'profile_field_specialcode' => $usuario->profile_field_specialcode,
+                    'coursename' => $curso['fullname'],
+                    'courseshortname' => $curso['shortname'],
+                    'startdate' => $matricula['timestart'],
+                    'enddate' => $matricula['timeend'],
+                    'coursestatus' => $acabado,
+                    'access' => $accesos,
+                    'lastaccess' => $ultimo_acceso
+                );
+            } 
         }
-
-        var_dump($response);
-        die('FIN');
         return $response;
     }
 

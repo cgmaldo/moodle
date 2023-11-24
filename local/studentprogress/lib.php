@@ -56,7 +56,7 @@ function enrol_dates ($userid, $courseid) {
     if (!$enrolmentsDates) {
         return null;
     } else {
-        return array('timestart'=>$enrolmentsDates->timestart, 'timeend'=>$enrolmentsDates->timeend);
+        return array('timestart'=>$enrolmentsDates->timestart, 'timeend'=>($enrolmentsDates->timeend != '01/01/1970') ? $enrolmentsDates->timeend : '');
     }
 }    
 
@@ -126,7 +126,7 @@ function ultimo_acceso ($userid, $courseid) {
     ";
     $infoAcceso = $DB->get_record_sql($sql, array());
     if (!$infoAcceso) {
-        return 0;
+        return '';
     } else {
         return $infoAcceso->timeaccess;
     }
