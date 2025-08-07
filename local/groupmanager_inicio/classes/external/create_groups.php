@@ -1,16 +1,14 @@
 <?php
+namespace local_groupmanager\external;
 
-namespace local_groupmanager;
-
-use core_external\external_api;
-use core_external\external_function_parameters;
-use core_external\external_multiple_structure;
-use core_external\external_single_structure;
-use core_external\external_value;
+use external_api;
 use invalid_parameter_exception;
+use external_function_parameters;
+use external_multiple_structure;
+use external_single_structure;
+use external_value;
 
-
-class create_groups extends \core_external\external_api {
+class create_groups extends external_api {
 
     /**
      * Returns description of method parameters
@@ -22,22 +20,34 @@ class create_groups extends \core_external\external_api {
                 new external_single_structure([
                     'courseid' => new external_value(PARAM_INT, 'id of course'),
                     'name' => new external_value(PARAM_TEXT, 'multilang compatible name, course unique'),
-                    'summary' => new external_value(PARAM_RAW, 'group summary text'),
-                    'enrolmentkey' => new external_value(PARAM_RAW, 'group enrol secret phrase', VALUE_OPTIONAL),
+                    'description' => new external_value(PARAM_RAW, 'group description text'),
+                    'enrolmentkey' => new external_value(PARAM_RAW, 'group enrol secret phrase'),
                 ])
             )
         ]);
     }
 
+    public static function execute_returns() {
+        return new external_multiple_structure(
+            new external_single_structure([
+                'id' => new external_value(PARAM_INT, 'group record id'),
+                'courseid' => new external_value(PARAM_INT, 'id of course'),
+                'name' => new external_value(PARAM_TEXT, 'multilang compatible name, course unique'),
+                'description' => new external_value(PARAM_RAW, 'group description text'),
+                'enrolmentkey' => new external_value(PARAM_RAW, 'group enrol secret phrase'),
+            ])
+        );
+    }
+
     /**
-    * Create groups
-    * @param array $groups array of group description arrays (with keys groupname and courseid)
-    * @return array of newly created groups
-    */
+     * Create groups
+     * @param array $groups array of group description arrays (with keys groupname and courseid)
+     * @return array of newly created groups
+     */
     public static function execute($groups) {
         global $CFG, $DB;
         require_once($CFG->dirroot."/group/lib.php");
-
+        
         $params = self::validate_parameters(self::execute_parameters(), ['groups' => $groups]);
 
         $transaction = $DB->start_delegated_transaction(); //If an exception is thrown in the below code, all DB queries in this code will be rollback.
@@ -55,7 +65,7 @@ class create_groups extends \core_external\external_api {
             }
 
             // now security checks
-            $context = \context_course::instance($group->courseid);
+            $context = get_context_instance(CONTEXT_COURSE, $group->courseid);
             self::validate_context($context);
             require_capability('moodle/course:managegroups', $context);
 
@@ -69,15 +79,4 @@ class create_groups extends \core_external\external_api {
         return $groups;
     }
 
-    public static function execute_returns() {
-        return new external_multiple_structure(
-            new external_single_structure([
-                'id' => new external_value(PARAM_INT, 'group record id'),
-                'courseid' => new external_value(PARAM_INT, 'id of course'),
-                'name' => new external_value(PARAM_TEXT, 'multilang compatible name, course unique'),
-                'summary' => new external_value(PARAM_RAW, 'group summary text'),
-                'enrolmentkey' => new external_value(PARAM_RAW, 'group enrol secret phrase'),
-            ])
-        );
-    }
 }
