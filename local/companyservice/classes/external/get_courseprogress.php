@@ -49,7 +49,7 @@ class get_courseprogress extends external_api {
         $contextCourse = \core\context\course::instance($course->id);
         self::validate_context($contextCourse);
         
-        $enrolled = is_enrolled($contextCourse, $params['userid'], '', true);
+        $enrolled = is_enrolled($contextCourse, $params['userid'], '', false);
         if (!$enrolled) {
             throw new invalid_parameter_exception('User not enrolled in the course');
         }
@@ -70,6 +70,7 @@ class get_courseprogress extends external_api {
                 }
             }
         }
+
         $percentProgress = ($numberActivities==0) ? 0.00 : round(($numberActivitiesCompleted*100)/$numberActivities, 2);
         
         $progressUserCourse = (object)[
