@@ -44,6 +44,5 @@ class get_infouser_test extends \externallib_advanced_testcase {
         $this->assertEquals($returnValue->email, $newUser->email);
         $this->assertEquals($returnValue->username, $newUser->username);
         $this->assertEquals($returnValue->agency, 'agencia prueba');
-        
     }
 }
