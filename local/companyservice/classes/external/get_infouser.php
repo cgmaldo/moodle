@@ -50,6 +50,10 @@ class get_infouser extends external_api {
 
         profile_load_data($user);
 
+        if (!isset($user->profile_field_agency)) {
+            throw new invalid_parameter_exception('No exist profile filed agency');
+        }
+        
         $infoUserSearched = (object)[
             'id'        => $user->id,
             'username'  => $user->username,
