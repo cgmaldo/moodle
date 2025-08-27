@@ -58,7 +58,6 @@ class get_infocourses extends external_api {
             
             $completiondate = completedDateCourse($user->id, $course->id);
             
-            //this function is wrong
             $enrolmentDates = getEnrolmentDates($user->id, $course->id);
             
             if (!isset($enrolmentDates->timestart) || !isset($enrolmentDates->timeend)) {
@@ -66,6 +65,7 @@ class get_infocourses extends external_api {
             }
             $startDayHuman=tsToDMY($enrolmentDates->timestart);
             $endDayHuman=tsToDMY($enrolmentDates->timeend);
+            
             $infoCourse = array(
                 'id'            => $course->id,
                 'fullname'      => $course->fullname,
