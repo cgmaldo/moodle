@@ -62,36 +62,36 @@ class get_courseprogress_test extends \externallib_advanced_testcase {
         $returnValue=$class->execute($user->id, $course->id);
     }
 
-    // public function test_existent_enrolment_progress() {
-    //     global $DB;
+    public function test_existent_enrolment_progress() {
+        global $DB;
         
-    //     $this->resetAfterTest(true);
-    //     $this->setAdminUser();
+        $this->resetAfterTest(true);
+        $this->setAdminUser();
         
-    //     $user = $this->getDataGenerator()->create_user();
-    //     $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
-    //     $studentroleid = $DB->get_field('role', 'id', array('shortname'=>'student'));
-    //     $this->getDataGenerator()->enrol_user($user->id, $course->id, $studentroleid, 'manual');
+        $user = $this->getDataGenerator()->create_user();
+        $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
+        $studentroleid = $DB->get_field('role', 'id', array('shortname'=>'student'));
+        $this->getDataGenerator()->enrol_user($user->id, $course->id, $studentroleid, 'manual');
         
-    //     $activity = $this->getDataGenerator()->create_module('page', array('course' => $course->id), array('completion' => 1));
-    //     // Set completion criteria and mark the user to complete the criteria.
-    //     $criteriadata = (object) [
-    //         'id' => $course->id,
-    //         'criteria_activity' => [$activity->cmid => 1],
-    //     ];
-    //     $criterion = new \completion_criteria_activity();
-    //     $criterion->update_config($criteriadata);
-    //     $cmactivity = get_coursemodule_from_id('page', $activity->cmid);
-    //     $completion = new \completion_info($course);
-    //     $completion->update_state($cmactivity, COMPLETION_COMPLETE, $user->id);
+        $activity = $this->getDataGenerator()->create_module('page', array('course' => $course->id), array('completion' => 1));
+        // Set completion criteria and mark the user to complete the criteria.
+        $criteriadata = (object) [
+            'id' => $course->id,
+            'criteria_activity' => [$activity->cmid => 1],
+        ];
+        $criterion = new \completion_criteria_activity();
+        $criterion->update_config($criteriadata);
+        $cmactivity = get_coursemodule_from_id('page', $activity->cmid);
+        $completion = new \completion_info($course);
+        $completion->update_state($cmactivity, COMPLETION_COMPLETE, $user->id);
 
-    //     $activity2 = $this->getDataGenerator()->create_module('page', array('course' => $course->id), array('completion' => 1));
+        $activity2 = $this->getDataGenerator()->create_module('page', array('course' => $course->id), array('completion' => 1));
 
-    //     $class = new get_courseprogress();
-    //     $returnValue=$class->execute($user->id, $course->id);
+        $class = new get_courseprogress();
+        $returnValue=$class->execute($user->id, $course->id);
         
-    //     $this->assertEquals($returnValue->progress, 50.0);
-    //  }
+        $this->assertEquals($returnValue->progress, 50.0);
+     }
 
     public function test_existent_enrolment_progress() {
         global $DB;
