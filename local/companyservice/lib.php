@@ -35,15 +35,14 @@ function completedDateCourse(int $userid, int $courseid) {
 */
 function getEnrolmentDates(int $userid, int $courseid) {
     global $DB;
-    $sql="
-        SELECT ue.timestart, ue.timeend
-        FROM mdl_user_enrolments as ue
-        JOIN mdl_enrol as e ON e.id=ue.enrolid 
-        JOIN mdl_user u ON u.id=ue.userid
-        WHERE ue.userid=$userid AND e.enrol='manual' AND e.courseid=$courseid AND ue.status<>1 AND u.deleted=0
-    ";
-    $enrolmentDates = $DB->get_record_sql($sql);
-    return $enrolmentDates;
+    $maninstance1 = $DB->get_record('enrol', array('courseid'=>$courseid, 'enrol'=>'manual'), '*', MUST_EXIST);
+    $manual = enrol_get_plugin('manual');
+    $enrolments = $DB->get_record('user_enrolments', array('enrolid'=>$maninstance1->id, 'userid'=>$userid, 'status'=>ENROL_USER_ACTIVE));
+    return (!$enrolments) 
+        ? 
+        (object)array('timestart'=>0, 'timeend'=>0) 
+        : 
+        (object)array('timestart'=>$enrolments->timestart, 'timeend'=>$enrolments->timeend);
 }
 
 /*
