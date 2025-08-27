@@ -57,7 +57,10 @@ class get_infocourses extends external_api {
             require_capability('gradereport/user:view', $contextCourse);
             
             $completiondate = completedDateCourse($user->id, $course->id);
+            
+            //this function is wrong
             $enrolmentDates = getEnrolmentDates($user->id, $course->id);
+            
             if (!isset($enrolmentDates->timestart) || !isset($enrolmentDates->timeend)) {
                 throw new invalid_parameter_exception('Enrolment without time start or time end');
             }
