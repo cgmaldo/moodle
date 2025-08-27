@@ -1,7 +1,6 @@
 <?php 
 
 $functions = [
-
     'local_companyservice_get_infouser' => [
         'classname'    => 'local_companyservice\external\get_infouser',
         'methodname'   => 'execute',
